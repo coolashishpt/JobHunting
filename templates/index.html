@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Top Companies - Careers</title>
+    <style>
+      body { font-family: Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+      h1 { text-align: center }
+      .company { border-bottom: 1px solid #ddd; padding: 1rem 0 }
+      .career { color: #1a73e8 }
+    </style>
+  </head>
+  <body>
+    <h1>Top Companies — Career Pages</h1>
+    <p>Public curated list of companies and their career pages.</p>
+    {% if companies %}
+      {% for c in companies %}
+        <div class="company">
+          <h2>{{ c.company_name }}</h2>
+          <p>Employees: {{ c.employee_strength }}</p>
+          <p>Career page: <a class="career" href="{{ c.career_page }}" target="_blank" rel="noopener noreferrer">{{ c.career_page }}</a></p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No companies found. Add entries via the admin interface at /admin/.</p>
+    {% endif %}
+  </body>
+</html>
