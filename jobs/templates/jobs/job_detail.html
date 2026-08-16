@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col-md-8">
+      <h2>{{ job.title }}</h2>
+      <p class="text-muted">{{ job.company.name }} — {{ job.location }} {% if job.remote %}<span class="badge bg-info ms-2">Remote</span>{% endif %}</p>
+      <div class="card mb-3"><div class="card-body"><pre style="white-space:pre-wrap;">{{ job.description }}</pre></div></div>
+      <h5>Skills</h5>
+      <p>{% if job.skills %}{{ job.skills }}{% else %}<em>Not specified</em>{% endif %}</p>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <p><strong>Type:</strong> {{ job.get_job_type_display }}</p>
+          {% if job.salary_min or job.salary_max %}
+            <p><strong>Salary:</strong> {{ job.salary_min }} - {{ job.salary_max }}</p>
+          {% endif %}
+          <p><strong>Experience:</strong> {{ job.experience_level|default:'Any' }}</p>
+          <p><strong>Posted:</strong> {{ job.created_at|date:"M j, Y" }}</p>
+          <div class="d-grid gap-2 mt-3">
+          {% if user.is_authenticated %}
+            {% if not applied %}
+              <a href="{% url 'jobs:apply_job' pk=job.pk %}" class="btn btn-primary">Apply</a>
+              <a href="{% url 'jobs:save_job' pk=job.pk %}" class="btn btn-outline-secondary">Save</a>
+            {% else %}
+              <span class="text-success">You have applied</span>
+            {% endif %}
+          {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn btn-primary">Login to apply</a>
+          {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

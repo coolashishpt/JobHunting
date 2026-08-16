@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">{{ profile.user.get_full_name|default:profile.user.username }}</h3>
+      <p class="text-muted">Role: {{ profile.get_role_display }}</p>
+      <p><strong>Location:</strong> {{ profile.location|default:'N/A' }}</p>
+      <p><strong>Skills:</strong> {{ profile.skills|default:'N/A' }}</p>
+      <p><strong>Experience:</strong> {{ profile.experience_years|default:'N/A' }} years</p>
+      {% if profile.resume %}
+        <p>Resume: <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-sm btn-outline-primary">Download</a></p>
+      {% endif %}
+      <a href="{% url 'accounts:edit_profile' %}" class="btn btn-secondary">Edit profile</a>
+    </div>
+  </div>
+{% endblock %}

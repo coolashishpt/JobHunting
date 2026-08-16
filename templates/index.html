@@ -1,29 +1,25 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Top Companies - Careers</title>
-    <style>
-      body { font-family: Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-      h1 { text-align: center }
-      .company { border-bottom: 1px solid #ddd; padding: 1rem 0 }
-      .career { color: #1a73e8 }
-    </style>
-  </head>
-  <body>
-    <h1>Top Companies — Career Pages</h1>
-    <p>Public curated list of companies and their career pages.</p>
+{% extends "base.html" %}
+{% block content %}
+  <div class="py-4 text-center bg-white rounded shadow-sm mb-4">
+    <h1 class="mb-1">Top Companies — Career Pages</h1>
+    <p class="text-muted">Curated list of companies and their career pages to help your job search.</p>
+  </div>
+
+  <div class="row g-3">
     {% if companies %}
       {% for c in companies %}
-        <div class="company">
-          <h2>{{ c.company_name }}</h2>
-          <p>Employees: {{ c.employee_strength }}</p>
-          <p>Career page: <a class="career" href="{{ c.career_page }}" target="_blank" rel="noopener noreferrer">{{ c.career_page }}</a></p>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ c.company_name }}</h5>
+              <p class="card-text text-muted">Employees: {{ c.employee_strength }}</p>
+              <a href="{{ c.career_page }}" target="_blank" rel="noopener noreferrer" class="stretched-link">Visit careers</a>
+            </div>
+          </div>
         </div>
       {% endfor %}
     {% else %}
       <p>No companies found. Add entries via the admin interface at /admin/.</p>
     {% endif %}
-  </body>
-</html>
+  </div>
+{% endblock %}
