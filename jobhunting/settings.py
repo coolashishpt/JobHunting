@@ -66,6 +66,14 @@ else:
 # Trusted origins for CSRF (comma-separated)
 CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('DJ_CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
 
+# Celery configuration
+CELERY_BROKER_URL = os.environ.get('DJ_CELERY_BROKER_URL', os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0'))
+CELERY_RESULT_BACKEND = os.environ.get('DJ_CELERY_RESULT_BACKEND', os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0'))
+# Optional Celery settings namespace passthrough support
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
 
 # Application definition
 
