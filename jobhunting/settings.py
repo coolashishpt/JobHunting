@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('DJ_SECRET_KEY', 'django-insecure-j!#h2&((=r#kvwn_l@
 DEBUG = os.environ.get('DJ_DEBUG', 'True') == 'True'
 
 # Allow hosts to be set via environment variable (comma-separated)
-ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJ_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJ_ALLOWED_HOSTS', 'localhost,127.0.0.1,testserver').split(',') if h.strip()]
 
 # Email configuration: default to console in development, but allow SMTP via env vars
 EMAIL_BACKEND = os.environ.get('DJ_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
@@ -176,7 +176,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 # Directory to collect static files for production
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 

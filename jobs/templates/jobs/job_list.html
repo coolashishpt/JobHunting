@@ -13,10 +13,10 @@
     <div class="col-md-1">
       <select name="job_type" class="form-select">
         <option value="">Any</option>
-        <option value="full_time" {% if job_type=='full_time' %}selected{% endif %}>Full-time</option>
-        <option value="part_time" {% if job_type=='part_time' %}selected{% endif %}>Part-time</option>
-        <option value="contract" {% if job_type=='contract' %}selected{% endif %}>Contract</option>
-        <option value="internship" {% if job_type=='internship' %}selected{% endif %}>Intern</option>
+        <option value="full_time" {% if job_type == 'full_time' %}selected{% endif %}>Full-time</option>
+        <option value="part_time" {% if job_type == 'part_time' %}selected{% endif %}>Part-time</option>
+        <option value="contract" {% if job_type == 'contract' %}selected{% endif %}>Contract</option>
+        <option value="internship" {% if job_type == 'internship' %}selected{% endif %}>Intern</option>
       </select>
     </div>
     <div class="col-md-1 d-flex align-items-center"><label class="form-check-label"><input type="checkbox" name="remote" value="1" class="form-check-input me-2" {% if remote %}checked{% endif %}>Remote</label></div>
