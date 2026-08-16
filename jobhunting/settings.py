@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'CompanyData',
+    'accounts',
+    'jobs',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +74,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'jobhunting.wsgi.application'
+
+# Media (user uploaded files)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Authentication
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Email - console backend for dev
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Database
