@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+
+  web:
+    build: .
+    command: gunicorn jobhunting.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static-data:/app/staticfiles
+      - media-data:/app/media
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  worker:
+    build: .
+    command: celery -A jobhunting worker --loglevel=info --concurrency=2
+    volumes:
+      - .:/app
+      - media-data:/app/media
+    env_file:
+      - ./.env
+    depends_on:
+      - redis
+
+volumes:
+  redis-data:
+  static-data:
+  media-data:

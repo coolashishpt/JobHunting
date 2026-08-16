@@ -114,8 +114,9 @@ def applicant_detail(request, job_pk, app_pk):
             prev_status = application.status
             app = form.save()
             # send notification email to candidate if status changed or feedback provided
+            # send notification email to candidate via Celery task (non-blocking)
             try:
-                from django.core.mail import send_mail
+                from .tasks import send_application_update_email
                 subject = f"Update on your application for {job.title}"
                 body_lines = [f"Status: {app.get_status_display()}"]
                 if app.recruiter_feedback:
@@ -123,9 +124,10 @@ def applicant_detail(request, job_pk, app_pk):
                     body_lines.append(app.recruiter_feedback)
                 body = "\n".join(body_lines)
                 if app.candidate.email:
-                    send_mail(subject, body, None, [app.candidate.email])
+                    # Use delay to queue the task; task arguments must be JSON-serializable
+                    send_application_update_email.delay(subject, body, None, [app.candidate.email])
             except Exception:
-                # don't block on email errors
+                # do not let task/errors block the web request; Celery will log failures
                 pass
             return redirect('jobs:applicants_list', job_pk=job.pk)
     else:

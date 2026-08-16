@@ -28,7 +28,51 @@ SECRET_KEY = os.environ.get('DJ_SECRET_KEY', 'django-insecure-j!#h2&((=r#kvwn_l@
 DEBUG = os.environ.get('DJ_DEBUG', 'True') == 'True'
 
 # Allow hosts to be set via environment variable (comma-separated)
-ALLOWED_HOSTS = os.environ.get('DJ_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = [h.strip() for h in os.environ.get('DJ_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if h.strip()]
+
+# Email configuration: default to console in development, but allow SMTP via env vars
+EMAIL_BACKEND = os.environ.get('DJ_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+DEFAULT_FROM_EMAIL = os.environ.get('DJ_DEFAULT_FROM_EMAIL', 'noreply@localhost')
+EMAIL_HOST = os.environ.get('DJ_EMAIL_HOST', '')
+EMAIL_PORT = int(os.environ.get('DJ_EMAIL_PORT', '0')) if os.environ.get('DJ_EMAIL_PORT') else None
+EMAIL_HOST_USER = os.environ.get('DJ_EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('DJ_EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = os.environ.get('DJ_EMAIL_USE_TLS', 'False') == 'True'
+EMAIL_USE_SSL = os.environ.get('DJ_EMAIL_USE_SSL', 'False') == 'True'
+
+# Use provided backend if SMTP settings set
+if EMAIL_HOST and EMAIL_PORT:
+    EMAIL_BACKEND = os.environ.get('DJ_EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+
+# Security hardening toggles (enabled when DJ_DEBUG is not True)
+if not DEBUG:
+    # Redirect all HTTP to HTTPS
+    SECURE_SSL_REDIRECT = os.environ.get('DJ_SECURE_SSL_REDIRECT', 'True') == 'True'
+    SESSION_COOKIE_SECURE = os.environ.get('DJ_SESSION_COOKIE_SECURE', 'True') == 'True'
+    CSRF_COOKIE_SECURE = os.environ.get('DJ_CSRF_COOKIE_SECURE', 'True') == 'True'
+    # HSTS
+    SECURE_HSTS_SECONDS = int(os.environ.get('DJ_SECURE_HSTS_SECONDS', '3600'))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('DJ_SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True') == 'True'
+    SECURE_HSTS_PRELOAD = os.environ.get('DJ_SECURE_HSTS_PRELOAD', 'False') == 'True'
+    # Other
+    SECURE_BROWSER_XSS_FILTER = True
+    X_FRAME_OPTIONS = 'DENY'
+else:
+    # safe defaults while developing
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+
+# Trusted origins for CSRF (comma-separated)
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.environ.get('DJ_CSRF_TRUSTED_ORIGINS', '').split(',') if o.strip()]
+
+# Celery configuration
+CELERY_BROKER_URL = os.environ.get('DJ_CELERY_BROKER_URL', os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0'))
+CELERY_RESULT_BACKEND = os.environ.get('DJ_CELERY_RESULT_BACKEND', os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0'))
+# Optional Celery settings namespace passthrough support
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 
 # Application definition
