@@ -114,8 +114,9 @@ def applicant_detail(request, job_pk, app_pk):
             prev_status = application.status
             app = form.save()
             # send notification email to candidate if status changed or feedback provided
+            # send notification email to candidate asynchronously (don't block request)
             try:
-                from django.core.mail import send_mail
+                from jobhunting.email_utils import send_email_async
                 subject = f"Update on your application for {job.title}"
                 body_lines = [f"Status: {app.get_status_display()}"]
                 if app.recruiter_feedback:
@@ -123,9 +124,9 @@ def applicant_detail(request, job_pk, app_pk):
                     body_lines.append(app.recruiter_feedback)
                 body = "\n".join(body_lines)
                 if app.candidate.email:
-                    send_mail(subject, body, None, [app.candidate.email])
+                    send_email_async(subject, body, None, [app.candidate.email])
             except Exception:
-                # don't block on email errors
+                # do not let email errors block the web request; they are logged by the helper
                 pass
             return redirect('jobs:applicants_list', job_pk=job.pk)
     else:
