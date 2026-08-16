@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j!#h2&((=r#kvwn_l@ls*8tt3um$z4ibk-g+w42$n6xqj^rx@s'
+# Load SECRET_KEY from environment when available; fallback to insecure dev key
+SECRET_KEY = os.environ.get('DJ_SECRET_KEY', 'django-insecure-j!#h2&((=r#kvwn_l@ls*8tt3um$z4ibk-g+w42$n6xqj^rx@s')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJ_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+# Allow hosts to be set via environment variable (comma-separated)
+ALLOWED_HOSTS = os.environ.get('DJ_ALLOWED_HOSTS', 'localhost').split(',')
 
 
 # Application definition
@@ -55,7 +58,7 @@ ROOT_URLCONF = 'jobhunting.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,6 +120,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# Directory to collect static files for production
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
