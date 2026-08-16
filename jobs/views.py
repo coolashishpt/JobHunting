@@ -87,6 +87,12 @@ def candidate_dashboard(request):
 
 
 @login_required
+def candidate_application_detail(request, app_pk):
+    application = get_object_or_404(Application, pk=app_pk, candidate=request.user)
+    return render(request, 'jobs/application_detail_candidate.html', {'application': application})
+
+
+@login_required
 def applicants_list(request, job_pk):
     # recruiter can view applicants for a job they posted
     job = get_object_or_404(Job, pk=job_pk)
@@ -105,7 +111,22 @@ def applicant_detail(request, job_pk, app_pk):
     if request.method == 'POST':
         form = ApplicationStatusForm(request.POST, instance=application)
         if form.is_valid():
-            form.save()
+            prev_status = application.status
+            app = form.save()
+            # send notification email to candidate if status changed or feedback provided
+            try:
+                from django.core.mail import send_mail
+                subject = f"Update on your application for {job.title}"
+                body_lines = [f"Status: {app.get_status_display()}"]
+                if app.recruiter_feedback:
+                    body_lines.append('\nRecruiter feedback:\n')
+                    body_lines.append(app.recruiter_feedback)
+                body = "\n".join(body_lines)
+                if app.candidate.email:
+                    send_mail(subject, body, None, [app.candidate.email])
+            except Exception:
+                # don't block on email errors
+                pass
             return redirect('jobs:applicants_list', job_pk=job.pk)
     else:
         form = ApplicationStatusForm(instance=application)

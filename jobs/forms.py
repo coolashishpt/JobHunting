@@ -24,4 +24,7 @@ class ApplyForm(forms.ModelForm):
 class ApplicationStatusForm(forms.ModelForm):
     class Meta:
         model = Application
-        fields = ['status']
+        fields = ['status', 'recruiter_feedback']
+        widgets = {
+            'recruiter_feedback': forms.Textarea(attrs={'rows': 4}),
+        }

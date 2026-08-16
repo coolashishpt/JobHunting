@@ -47,6 +47,7 @@ class Application(models.Model):
     cover_letter = models.TextField(blank=True)
     resume = models.FileField(upload_to='applications/resumes/', null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='applied')
+    recruiter_feedback = models.TextField(blank=True)
     applied_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

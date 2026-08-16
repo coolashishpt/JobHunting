@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ application.job.title }}</h2>
+  <p><strong>Applied at:</strong> {{ application.applied_at }}</p>
+  <p><strong>Status:</strong> {{ application.get_status_display }}</p>
+  <h3>Recruiter feedback</h3>
+  {% if application.recruiter_feedback %}
+    <div class="card"><div class="card-body">{{ application.recruiter_feedback|linebreaks }}</div></div>
+  {% else %}
+    <p>No feedback yet.</p>
+  {% endif %}
+  <p><a href="{% url 'jobs:candidate_dashboard' %}">Back to dashboard</a></p>
+{% endblock %}
