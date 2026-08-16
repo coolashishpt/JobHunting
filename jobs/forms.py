@@ -19,3 +19,9 @@ class ApplyForm(forms.ModelForm):
             if resume.size > 5 * 1024 * 1024:
                 raise forms.ValidationError('Resume file is too large (max 5MB)')
         return resume
+
+
+class ApplicationStatusForm(forms.ModelForm):
+    class Meta:
+        model = Application
+        fields = ['status']

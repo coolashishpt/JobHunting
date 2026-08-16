@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Applicant: {{ application.candidate.username }}</h2>
+  <p><strong>Applied at:</strong> {{ application.applied_at }}</p>
+  <p><strong>Cover letter:</strong></p>
+  <div class="card mb-3"><div class="card-body">{{ application.cover_letter|linebreaks }}</div></div>
+  {% if application.resume %}
+    <p>Resume: <a href="{{ application.resume.url }}">Download</a></p>
+  {% endif %}
+
+  <h3>Change status</h3>
+  <form method="post">{% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary">Update</button>
+  </form>
+  <p><a href="{% url 'jobs:applicants_list' job_pk=job.pk %}">Back to applicants</a></p>
+{% endblock %}

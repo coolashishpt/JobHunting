@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Job, Company, Application, SavedJob
-from .forms import JobForm, ApplyForm
+from .forms import JobForm, ApplyForm, ApplicationStatusForm
 from django.core.paginator import Paginator
 from django.db.models import Q
 
@@ -84,6 +84,32 @@ def candidate_dashboard(request):
     saved_jobs = SavedJob.objects.filter(user=request.user).select_related('job')
     applications = Application.objects.filter(candidate=request.user).select_related('job')
     return render(request, 'jobs/candidate_dashboard.html', {'saved_jobs': saved_jobs, 'applications': applications})
+
+
+@login_required
+def applicants_list(request, job_pk):
+    # recruiter can view applicants for a job they posted
+    job = get_object_or_404(Job, pk=job_pk)
+    if not getattr(request.user, 'profile', None) or request.user.profile.role != 'recruiter' or job.created_by != request.user:
+        return redirect('jobs:job_list')
+    applications = Application.objects.filter(job=job).select_related('candidate')
+    return render(request, 'jobs/applicants_list.html', {'job': job, 'applications': applications})
+
+
+@login_required
+def applicant_detail(request, job_pk, app_pk):
+    job = get_object_or_404(Job, pk=job_pk)
+    if not getattr(request.user, 'profile', None) or request.user.profile.role != 'recruiter' or job.created_by != request.user:
+        return redirect('jobs:job_list')
+    application = get_object_or_404(Application, pk=app_pk, job=job)
+    if request.method == 'POST':
+        form = ApplicationStatusForm(request.POST, instance=application)
+        if form.is_valid():
+            form.save()
+            return redirect('jobs:applicants_list', job_pk=job.pk)
+    else:
+        form = ApplicationStatusForm(instance=application)
+    return render(request, 'jobs/applicant_detail.html', {'job': job, 'application': application, 'form': form})
 
 
 @login_required

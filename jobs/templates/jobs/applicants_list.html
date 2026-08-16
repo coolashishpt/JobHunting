@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Applicants for {{ job.title }}</h2>
+  <p><a href="{% url 'jobs:recruiter_dashboard' %}">Back to dashboard</a></p>
+  {% for app in applications %}
+    <div class="card mb-2"><div class="card-body">
+      <h5>{{ app.candidate.username }}</h5>
+      <p>{{ app.cover_letter|linebreaks }}</p>
+      <p>Status: {{ app.get_status_display }}</p>
+      <a class="btn btn-sm btn-primary" href="{% url 'jobs:applicant_detail' job_pk=job.pk app_pk=app.pk %}">View</a>
+    </div></div>
+  {% empty %}
+    <p>No applicants yet.</p>
+  {% endfor %}
+{% endblock %}
