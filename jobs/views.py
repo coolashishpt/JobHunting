@@ -16,6 +16,18 @@ def job_list(request):
     skills = request.GET.get('skills', '')
 
     jobs = Job.objects.filter(is_published=True)
+
+    # Default to Python / Django-focused opportunities unless the user explicitly searches for something else.
+    default_python_filter = not any([q, location, min_salary, max_salary, job_type, remote, skills])
+    if default_python_filter:
+        jobs = jobs.filter(
+            Q(title__icontains='python') |
+            Q(title__icontains='django') |
+            Q(description__icontains='python') |
+            Q(description__icontains='django') |
+            Q(skills__icontains='python') |
+            Q(skills__icontains='django')
+        )
     if q:
         jobs = jobs.filter(Q(title__icontains=q) | Q(description__icontains=q) | Q(skills__icontains=q))
     if location:

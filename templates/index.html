@@ -1,25 +1,251 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="py-4 text-center bg-white rounded shadow-sm mb-4">
-    <h1 class="mb-1">Top Companies — Career Pages</h1>
-    <p class="text-muted">Curated list of companies and their career pages to help your job search.</p>
-  </div>
-
-  <div class="row g-3">
-    {% if companies %}
-      {% for c in companies %}
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">{{ c.company_name }}</h5>
-              <p class="card-text text-muted">Employees: {{ c.employee_strength }}</p>
-              <a href="{{ c.career_page }}" target="_blank" rel="noopener noreferrer" class="stretched-link">Visit careers</a>
+  <section class="hero-panel premium-hero">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="badge rounded-pill hero-badge">Python & Django jobs</span>
+        <h1 class="hero-title">Find the right opportunity. Hire with confidence.</h1>
+        <p class="hero-copy">A premium Python and Django-focused job marketplace for ambitious candidates and teams who value speed, clarity, and better hiring outcomes.</p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{% url 'jobs:job_list' %}" class="btn btn-primary btn-lg px-4">Explore jobs</a>
+          {% if user.is_authenticated %}
+            {% if user.profile.role == 'recruiter' %}
+              <a href="{% url 'jobs:recruiter_dashboard' %}" class="btn btn-outline-primary btn-lg px-4">Open dashboard</a>
+            {% else %}
+              <a href="{% url 'jobs:candidate_dashboard' %}" class="btn btn-outline-primary btn-lg px-4">My dashboard</a>
+            {% endif %}
+          {% else %}
+            <a href="{% url 'accounts:signup' %}" class="btn btn-outline-primary btn-lg px-4">Create account</a>
+          {% endif %}
+        </div>
+        <div class="trusted-row">
+          <span>Trusted by hiring teams in tech, product, design, and growth.</span>
+        </div>
+        <div class="row mt-4 g-3 stats-row">
+          <div class="col-md-4">
+            <div class="stat-box">
+              <strong>8k+</strong>
+              <span>Active job seekers</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-box">
+              <strong>2.4k+</strong>
+              <span>Open roles</span>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="stat-box">
+              <strong>94%</strong>
+              <span>Candidate satisfaction</span>
             </div>
           </div>
         </div>
-      {% endfor %}
-    {% else %}
-      <p>No companies found. Add entries via the admin interface at /admin/.</p>
-    {% endif %}
-  </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-card">
+          <div class="mini-panel">
+            <span class="mini-label">Live hiring snapshot</span>
+            <h4>Senior Product Designer</h4>
+            <p>Remote | Full-time | $120k - $160k</p>
+            <div class="tag-list">
+              <span>UX</span>
+              <span>Figma</span>
+              <span>Product</span>
+            </div>
+          </div>
+          <div class="mini-panel alt-panel">
+            <span class="mini-label">Candidate match</span>
+            <div class="match-score">96%</div>
+            <p>Strong fit based on portfolio, skills, and experience.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Why top candidates and teams stay</h2>
+      <p class="section-copy">Everything needed to discover opportunities and hire faster — in one premium experience.</p>
+    </div>
+    <div class="row g-4" id="features">
+      <div class="col-md-4">
+        <div class="info-card h-100">
+          <div class="icon-wrap">🎯</div>
+          <h5>Smarter matching</h5>
+          <p>Find candidates and jobs based on skills, experience, preferred location, and salary expectations.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card h-100">
+          <div class="icon-wrap">⚡</div>
+          <h5>Faster hiring</h5>
+          <p>Post jobs, review applicants, update status, and move the process forward without extra tools.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card h-100">
+          <div class="icon-wrap">🔒</div>
+          <h5>Trust and clarity</h5>
+          <p>Transparent status updates, profile management, and recruiter feedback reduce uncertainty.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block alt-section">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <h2 class="section-title">For candidates</h2>
+        <ul class="feature-list">
+          <li>Build a polished profile with skills, experience, resume, and portfolio.</li>
+          <li>Save jobs, track applications, and monitor recruiter feedback in real time.</li>
+          <li>Apply to roles aligned with your goals, strengths, and work preferences.</li>
+        </ul>
+      </div>
+      <div class="col-lg-6">
+        <div class="info-card h-100">
+          <h5>Candidate workflow</h5>
+          <ol class="feature-list numbered">
+            <li>Create profile</li>
+            <li>Upload resume</li>
+            <li>Search and save roles</li>
+            <li>Apply and track updates</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <div class="info-card h-100">
+          <h5>Recruiter workflow</h5>
+          <ol class="feature-list numbered">
+            <li>Create a job listing</li>
+            <li>Review applicants</li>
+            <li>Update application status</li>
+            <li>Keep candidates informed</li>
+          </ol>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <h2 class="section-title">For employers</h2>
+        <ul class="feature-list">
+          <li>Post jobs quickly and manage candidates from one dashboard.</li>
+          <li>Review profile details, resumes, and application history in context.</li>
+          <li>Give clear updates and keep hiring conversations professional and timely.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Featured companies</h2>
+      <p class="section-copy">Explore organizations actively building teams and careers.</p>
+    </div>
+    <div class="row g-3">
+      {% if companies %}
+        {% for c in companies %}
+          <div class="col-md-6 col-lg-4">
+            <div class="company-card h-100">
+              <div class="company-card-body">
+                <h5>{{ c.company_name }}</h5>
+                <p class="text-muted mb-3">Employees: {{ c.employee_strength }}</p>
+                <a href="{{ c.career_page }}" target="_blank" rel="noopener noreferrer">Visit careers</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12">
+          <div class="empty-state">
+            No companies found yet. Add entries through the admin interface at <a href="/admin/">/admin/</a>.
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="section-block testimonial-panel">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Loved by hiring teams and candidates</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <p>"The experience feels premium, credible, and effortless — exactly what a modern hiring platform should feel like."</p>
+          <div class="reviewer">A. Jordan, Talent Lead</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <p>"I could track every application and understand where I stood. It made the process much less stressful."</p>
+          <div class="reviewer">M. Patel, Product Designer</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="testimonial-card">
+          <p>"Our hiring flow feels cleaner, more structured, and much easier for both recruiters and candidates."</p>
+          <div class="reviewer">S. Nguyen, HR Manager</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-block" id="pricing">
+    <div class="text-center mb-4">
+      <h2 class="section-title">Simple pricing for teams that hire fast</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="pricing-card">
+          <div class="tier">Starter</div>
+          <div class="price">$29<span>/mo</span></div>
+          <ul>
+            <li>3 active job posts</li>
+            <li>Basic applicant tracking</li>
+            <li>Email notifications</li>
+          </ul>
+          <a href="{% url 'accounts:signup' %}" class="btn btn-outline-primary w-100">Get started</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="pricing-card featured-plan">
+          <div class="tier">Growth</div>
+          <div class="price">$79<span>/mo</span></div>
+          <ul>
+            <li>Unlimited jobs</li>
+            <li>Advanced dashboard</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="{% url 'accounts:signup' %}" class="btn btn-primary w-100">Most popular</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="pricing-card">
+          <div class="tier">Enterprise</div>
+          <div class="price">Custom</div>
+          <ul>
+            <li>Team access</li>
+            <li>Custom workflows</li>
+            <li>White-glove setup</li>
+          </ul>
+          <a href="{% url 'accounts:signup' %}" class="btn btn-outline-primary w-100">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-panel text-center">
+    <h2>Build the future you want to work in.</h2>
+    <p>Start your hiring journey or find your next opportunity with a platform made for growth.</p>
+    <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
+      <a href="{% url 'jobs:job_list' %}" class="btn btn-primary btn-lg">Browse jobs</a>
+      <a href="{% url 'accounts:signup' %}" class="btn btn-outline-light btn-lg">Join now</a>
+    </div>
+  </section>
 {% endblock %}
