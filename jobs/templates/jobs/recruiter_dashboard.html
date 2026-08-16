@@ -1,18 +1,25 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Recruiter Dashboard</h2>
-  <p><a class="btn btn-primary" href="{% url 'jobs:create_job' %}">Post a new job</a></p>
-  <h3>Your jobs</h3>
-  {% for job in jobs %}
-    <div class="card mb-2">
-      <div class="card-body">
-        <h5>{{ job.title }}</h5>
-        <p>{{ job.location }} — {{ job.get_job_type_display }}</p>
-        <p>Applicants: {{ job.application_set.count }}</p>
-        <a href="#" class="btn btn-sm btn-secondary">View applicants</a>
-      </div>
-    </div>
-  {% empty %}
-    <p>No jobs posted yet.</p>
-  {% endfor %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Recruiter Dashboard</h2>
+    <a class="btn btn-primary" href="{% url 'jobs:create_job' %}">Post a new job</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead><tr><th>Title</th><th>Location</th><th>Type</th><th>Applicants</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for job in jobs %}
+        <tr>
+          <td><a href="{% url 'jobs:job_detail' pk=job.pk %}">{{ job.title }}</a></td>
+          <td>{{ job.location }}</td>
+          <td>{{ job.get_job_type_display }}</td>
+          <td>{{ job.application_set.count }}</td>
+          <td><a class="btn btn-sm btn-outline-primary" href="{% url 'jobs:applicants_list' job_pk=job.pk %}">Applicants</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5">No jobs posted yet.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('DJ_SECRET_KEY', 'django-insecure-j!#h2&((=r#kvwn_l@
 DEBUG = os.environ.get('DJ_DEBUG', 'True') == 'True'
 
 # Allow hosts to be set via environment variable (comma-separated)
-ALLOWED_HOSTS = os.environ.get('DJ_ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = os.environ.get('DJ_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
