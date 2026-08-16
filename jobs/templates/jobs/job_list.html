@@ -2,8 +2,21 @@
 {% block content %}
   <h2>Jobs</h2>
   <form method="get" class="row g-2 mb-3">
-    <div class="col"><input class="form-control" name="q" placeholder="Search" value="{{ q }}"></div>
-    <div class="col"><input class="form-control" name="location" placeholder="Location" value="{{ location }}"></div>
+    <div class="col-md-3"><input class="form-control" name="q" placeholder="Search" value="{{ q }}"></div>
+    <div class="col-md-2"><input class="form-control" name="location" placeholder="Location" value="{{ location }}"></div>
+    <div class="col-md-2"><input class="form-control" name="skills" placeholder="Skills (comma separated)" value="{{ skills }}"></div>
+    <div class="col-md-1"><input class="form-control" name="min_salary" placeholder="Min" value="{{ min_salary }}"></div>
+    <div class="col-md-1"><input class="form-control" name="max_salary" placeholder="Max" value="{{ max_salary }}"></div>
+    <div class="col-md-1">
+      <select name="job_type" class="form-select">
+        <option value="">Any</option>
+        <option value="full_time" {% if job_type=='full_time' %}selected{% endif %}>Full-time</option>
+        <option value="part_time" {% if job_type=='part_time' %}selected{% endif %}>Part-time</option>
+        <option value="contract" {% if job_type=='contract' %}selected{% endif %}>Contract</option>
+        <option value="internship" {% if job_type=='internship' %}selected{% endif %}>Intern</option>
+      </select>
+    </div>
+    <div class="col-md-1 d-flex align-items-center"><label class="form-check-label"><input type="checkbox" name="remote" value="1" class="form-check-input" {% if remote %}checked{% endif %}> Remote</label></div>
     <div class="col-auto"><button class="btn btn-primary">Search</button></div>
   </form>
   {% for job in jobs %}

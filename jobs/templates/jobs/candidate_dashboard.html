@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Candidate Dashboard</h2>
+  <h3>Saved Jobs</h3>
+  {% for s in saved_jobs %}
+    <div class="card mb-2"><div class="card-body"><a href="{% url 'jobs:job_detail' pk=s.job.pk %}">{{ s.job.title }}</a> — {{ s.job.company.name }}</div></div>
+  {% empty %}<p>No saved jobs.</p>{% endfor %}
+
+  <h3>Your Applications</h3>
+  {% for a in applications %}
+    <div class="card mb-2"><div class="card-body"><a href="{% url 'jobs:job_detail' pk=a.job.pk %}">{{ a.job.title }}</a> — {{ a.status }}</div></div>
+  {% empty %}<p>No applications yet.</p>{% endfor %}
+{% endblock %}

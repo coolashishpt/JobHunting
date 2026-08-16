@@ -9,15 +9,41 @@ from django.db.models import Q
 def job_list(request):
     q = request.GET.get('q', '')
     location = request.GET.get('location', '')
+    min_salary = request.GET.get('min_salary')
+    max_salary = request.GET.get('max_salary')
+    job_type = request.GET.get('job_type', '')
+    remote = request.GET.get('remote', '')
+    skills = request.GET.get('skills', '')
+
     jobs = Job.objects.filter(is_published=True)
     if q:
         jobs = jobs.filter(Q(title__icontains=q) | Q(description__icontains=q) | Q(skills__icontains=q))
     if location:
         jobs = jobs.filter(location__icontains=location)
+    if min_salary:
+        try:
+            jobs = jobs.filter(salary_min__gte=int(min_salary))
+        except ValueError:
+            pass
+    if max_salary:
+        try:
+            jobs = jobs.filter(salary_max__lte=int(max_salary))
+        except ValueError:
+            pass
+    if job_type:
+        jobs = jobs.filter(job_type=job_type)
+    if remote in ['true', '1', 'on']:
+        jobs = jobs.filter(remote=True)
+    if skills:
+        # allow comma separated skills
+        for s in [s.strip() for s in skills.split(',') if s.strip()]:
+            jobs = jobs.filter(skills__icontains=s)
+
     paginator = Paginator(jobs.order_by('-created_at'), 10)
     page = request.GET.get('page')
     jobs_page = paginator.get_page(page)
-    return render(request, 'jobs/job_list.html', {'jobs': jobs_page, 'q': q, 'location': location})
+    context = {'jobs': jobs_page, 'q': q, 'location': location, 'min_salary': min_salary, 'max_salary': max_salary, 'job_type': job_type, 'remote': remote, 'skills': skills}
+    return render(request, 'jobs/job_list.html', context)
 
 
 def job_detail(request, pk):
@@ -30,7 +56,7 @@ def job_detail(request, pk):
 
 @login_required
 def create_job(request):
-    if not request.user.profile.role == 'recruiter':
+    if not getattr(request.user, 'profile', None) or not request.user.profile.role == 'recruiter':
         return redirect('jobs:job_list')
     if request.method == 'POST':
         form = JobForm(request.POST)
@@ -42,6 +68,22 @@ def create_job(request):
     else:
         form = JobForm()
     return render(request, 'jobs/job_form.html', {'form': form})
+
+
+@login_required
+def recruiter_dashboard(request):
+    if not getattr(request.user, 'profile', None) or request.user.profile.role != 'recruiter':
+        return redirect('jobs:job_list')
+    jobs = Job.objects.filter(created_by=request.user).order_by('-created_at')
+    return render(request, 'jobs/recruiter_dashboard.html', {'jobs': jobs})
+
+
+@login_required
+def candidate_dashboard(request):
+    # candidate view: saved jobs and applications
+    saved_jobs = SavedJob.objects.filter(user=request.user).select_related('job')
+    applications = Application.objects.filter(candidate=request.user).select_related('job')
+    return render(request, 'jobs/candidate_dashboard.html', {'saved_jobs': saved_jobs, 'applications': applications})
 
 
 @login_required

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
 
 app_name = 'accounts'
@@ -9,4 +9,5 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('profile/', views.view_profile, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    # auth URLs are provided at project level
 ]

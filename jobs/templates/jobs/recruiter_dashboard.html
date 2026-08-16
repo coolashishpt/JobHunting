@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Recruiter Dashboard</h2>
+  <p><a class="btn btn-primary" href="{% url 'jobs:create_job' %}">Post a new job</a></p>
+  <h3>Your jobs</h3>
+  {% for job in jobs %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <h5>{{ job.title }}</h5>
+        <p>{{ job.location }} — {{ job.get_job_type_display }}</p>
+        <p>Applicants: {{ job.application_set.count }}</p>
+        <a href="#" class="btn btn-sm btn-secondary">View applicants</a>
+      </div>
+    </div>
+  {% empty %}
+    <p>No jobs posted yet.</p>
+  {% endfor %}
+{% endblock %}
